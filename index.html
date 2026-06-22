@@ -426,6 +426,20 @@ table.ws-table .cell-checks { display: flex; flex-direction: column; gap: 4px; }
   font-size: 0.85rem; color: var(--lavender-deep); line-height: 1.7;
 }
 
+/* ───────── PART(챕터)별 저장 ───────── */
+.part-save {
+  margin-top: 2.4rem; padding-top: 1.5rem;
+  border-top: 1px dashed var(--section-line);
+  display: flex; align-items: center; justify-content: flex-end;
+  gap: 14px; flex-wrap: wrap;
+}
+.part-save-label { font-size: 0.84rem; color: var(--ink-muted); }
+.part-save .btn-ghost { font-weight: 600; }
+@media (max-width: 768px) {
+  .part-save { justify-content: center; text-align: center; }
+}
+@media print { .part-save { display: none !important; } }
+
 /* ───────── ACTION BAR ───────── */
 .action-bar {
   position: fixed; bottom: 0; left: 0; width: 100%;
@@ -521,9 +535,9 @@ table.ws-table .cell-checks { display: flex; flex-direction: column; gap: 4px; }
       <button class="btn btn-secondary" id="nextBtn" onclick="go(1)">다음 ▶</button>
     </div>
     <div class="dl-btns">
-      <button class="btn btn-ghost" onclick="downloadFile('md')">⬇ 브랜드맵 저장 (.md)</button>
-      <button class="btn btn-ghost" onclick="downloadFile('txt')">⬇ 텍스트 저장</button>
-      <button class="btn btn-primary" onclick="window.print()">🖨 인쇄 / PDF</button>
+      <button class="btn btn-ghost" onclick="downloadFile('md')">⬇ 전체 저장 (.md)</button>
+      <button class="btn btn-ghost" onclick="downloadFile('txt')">⬇ 전체 저장 (.txt)</button>
+      <button class="btn btn-primary" onclick="window.print()">🖨 전체 인쇄 / PDF</button>
     </div>
   </div>
 </div>
@@ -844,13 +858,17 @@ function renderAll() {
     tabs.insertAdjacentHTML('beforeend',
       `<button class="tab" data-i="${i}" onclick="switchTab(${i})"><span class="tab-check">✓</span><span>${esc(ws.n)} ${esc(ws.tab)}</span></button>`);
     const blocksHtml = ws.blocks.map(renderBlock).join('');
+    const partSave = `<div class="part-save">`
+      + `<span class="part-save-label">✍️ 이 PART를 다 작성했다면 ↓</span>`
+      + `<button class="btn btn-ghost" onclick="downloadFile('md',${i})">💾 PART ${esc(ws.n)} · ${esc(ws.tab)} 저장 (.md)</button>`
+      + `</div>`;
     panels.insertAdjacentHTML('beforeend',
       `<section class="panel" data-i="${i}">`
       + `<p class="panel-number">PART ${esc(ws.n)} / ${WS.length}</p>`
       + `<h2 class="panel-title">${esc(ws.title)}</h2>`
       + `<p class="panel-time"><span>🗂 ${esc(ws.time)}</span></p>`
       + `<div class="coaching-note${ws.noteWarn?' warn':''}">${ws.note}</div>`
-      + blocksHtml + `</section>`);
+      + blocksHtml + partSave + `</section>`);
   });
 }
 
@@ -1007,23 +1025,28 @@ function serializeBlock(b, fmt) {
   return out.join('\n');
 }
 
-function buildDoc(fmt) {
+function buildDoc(fmt, partIndex) {
   const md = fmt==='md';
   const date = new Date().toLocaleDateString('ko-KR');
   const brand = val('bm_name') || '(브랜드명)';
+  const single = (partIndex!=null);            // 특정 PART만 저장
+  const list = single ? [WS[partIndex]] : WS;
   let lines = [];
   if (md) {
     lines.push(`# ${brand} 브랜드 맵`);
     lines.push('');
-    lines.push('> 브랜드의 정체성 · 고객 · 시장 · 표현 · 실행 · 미래를 정의하는 문서입니다.');
+    lines.push(single
+      ? `> ${WS[partIndex].part}`
+      : '> 브랜드의 정체성 · 고객 · 시장 · 표현 · 실행 · 미래를 정의하는 문서입니다.');
     lines.push(`> 작성일: ${date}`);
   } else {
     lines.push('═══════════════════════════════════════');
     lines.push(`  ${brand} 브랜드 맵`);
+    if (single) lines.push(`  ${WS[partIndex].part}`);
     lines.push(`  작성일: ${date}`);
     lines.push('═══════════════════════════════════════');
   }
-  WS.forEach(ws=>{
+  list.forEach(ws=>{
     lines.push('');
     lines.push(md?`---\n\n## ${ws.part}`:`\n══ ${ws.part} ══`);
     lines.push('');
@@ -1060,15 +1083,24 @@ function resetAll() {
   location.reload();
 }
 
-function downloadFile(fmt) {
-  const text = buildDoc(fmt);
+function downloadFile(fmt, partIndex) {
+  const text = buildDoc(fmt, partIndex);
   const ext = fmt==='md'?'md':'txt';
   const brand = (val('bm_name')||'브랜드맵').replace(/[\\/:*?"<>|]/g,'').trim() || '브랜드맵';
+  const date = new Date().toISOString().slice(0,10);
+  let name;
+  if (partIndex!=null) {
+    const ws = WS[partIndex];
+    const tab = ws.tab.replace(/[\\/:*?"<>|\s]/g,'');
+    name = `${brand}_브랜드맵_PART${ws.n}_${tab}_${date}.${ext}`;
+  } else {
+    name = `${brand}_브랜드맵_전체_${date}.${ext}`;
+  }
   const blob = new Blob([text], {type:'text/plain;charset=utf-8'});
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
-  a.download = `${brand}_브랜드맵_${new Date().toISOString().slice(0,10)}.${ext}`;
+  a.download = name;
   a.click();
   URL.revokeObjectURL(url);
 }
