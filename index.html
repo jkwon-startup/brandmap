@@ -16,23 +16,25 @@
 *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
 :root {
-  --ink: #2a2438;
-  --ink-soft: #5c5470;
-  --ink-muted: #8e8a9a;
-  --cream: #faf8f5;
-  --warm-white: #f5f0eb;
-  --lavender-deep: #6b5b8a;
-  --lavender-mid: #9584b0;
-  --lavender-soft: #c8bdd9;
-  --lavender-whisper: #ede8f5;
-  --terracotta: #c17c5a;
-  --terracotta-soft: #e8c4ad;
-  --sage: #8fa68e;
-  --sage-soft: #d4e0d3;
-  --section-line: #ddd5c8;
-  --input-bg: rgba(250, 248, 245, 0.7);
-  --shadow-soft: 0 2px 20px rgba(42, 36, 56, 0.06);
-  --shadow-card: 0 4px 30px rgba(42, 36, 56, 0.08);
+  /* ─── TS² (TS Square) palette ─── 인주(印朱) red · ink · warm paper
+     변수명은 유지하되 값만 TS² 토큰으로 리매핑(accent 계열 = 인주 레드). */
+  --ink: #0A0A0A;            /* TS ink — dark base */
+  --ink-soft: #3A3A3A;
+  --ink-muted: #9A9A9A;      /* TS fog — muted text */
+  --cream: #F4F2EE;          /* TS ash — warm page surface */
+  --warm-white: #ECEAE4;
+  --lavender-deep: #AE232A;  /* TS red(인주) — primary accent */
+  --lavender-mid: #C8434A;   /* lighter red — hover/border */
+  --lavender-soft: #E6C3C5;  /* soft red — borders */
+  --lavender-whisper: #FAEDED; /* faint red tint — highlight bg */
+  --terracotta: #8E1C22;     /* deep red — warn/secondary accent */
+  --terracotta-soft: #E6C3C5;
+  --sage: #AE232A;           /* completion(done) accent — on-brand red */
+  --sage-soft: #FAEDED;
+  --section-line: rgba(10, 10, 10, 0.12); /* TS hairline */
+  --input-bg: rgba(244, 242, 238, 0.6);
+  --shadow-soft: 0 2px 20px rgba(10, 10, 10, 0.06);
+  --shadow-card: 0 4px 30px rgba(10, 10, 10, 0.08);
   --radius: 12px;
   --radius-sm: 8px;
 }
@@ -60,8 +62,8 @@ body::before {
   position: fixed;
   inset: 0;
   background:
-    radial-gradient(ellipse at 20% 0%, rgba(107, 91, 138, 0.04) 0%, transparent 60%),
-    radial-gradient(ellipse at 80% 100%, rgba(193, 124, 90, 0.03) 0%, transparent 50%);
+    radial-gradient(ellipse at 20% 0%, rgba(174, 35, 42, 0.05) 0%, transparent 60%),
+    radial-gradient(ellipse at 80% 100%, rgba(10, 10, 10, 0.03) 0%, transparent 50%);
   pointer-events: none;
   z-index: 0;
 }
@@ -127,12 +129,12 @@ body::before {
 
 .kakao-btn {
   display: inline-flex; flex-direction: column; gap: 9px;
-  background: #211d30; color: #fff;
+  background: #141414; color: #fff;
   padding: 13px 18px; border-radius: 16px;
   text-decoration: none; box-shadow: var(--shadow-card);
   transition: all 0.25s;
 }
-.kakao-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(42,36,56,0.28); }
+.kakao-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 26px rgba(10,10,10,0.30); }
 .kakao-main { display: flex; align-items: center; gap: 11px; }
 .kakao-icon { font-size: 1.4rem; line-height: 1; flex-shrink: 0; }
 .kakao-lines { display: flex; flex-direction: column; line-height: 1.4; }
@@ -140,7 +142,7 @@ body::before {
 .kakao-lines span { font-size: 0.82rem; color: rgba(255,255,255,0.78); }
 .kakao-code {
   align-self: flex-start;
-  background: #FEE500; color: #2a2438;
+  background: #FEE500; color: #0A0A0A;
   font-size: 0.74rem; font-weight: 600;
   padding: 4px 12px; border-radius: 100px;
 }
@@ -153,7 +155,7 @@ body::before {
   color: var(--ink-muted); font-family: 'Pretendard', sans-serif;
   font-size: 0.8rem; font-weight: 500; transition: all 0.25s;
 }
-.btn-reset:hover { border-color: var(--terracotta); color: var(--terracotta); background: #fdf3ed; }
+.btn-reset:hover { border-color: var(--terracotta); color: var(--terracotta); background: #FBECEC; }
 
 /* ───────── TABS ───────── */
 .tabs-wrap {
@@ -253,11 +255,11 @@ body::before {
   font-size: 0.88rem; color: var(--ink-soft);
   line-height: 1.85;
 }
-.coaching-note.warn { background: #fdf3ed; border-left-color: var(--terracotta); }
+.coaching-note.warn { background: #FBECEC; border-left-color: var(--terracotta); }
 
 /* Import (선택: 기존 자료 가져오기) */
 .import-box {
-  background: linear-gradient(135deg, var(--lavender-whisper) 0%, #faf5f0 100%);
+  background: linear-gradient(135deg, var(--lavender-whisper) 0%, #FCEFEF 100%);
   border: 1.5px solid var(--lavender-soft);
   border-radius: var(--radius); padding: 1.2rem 1.3rem;
 }
@@ -300,7 +302,7 @@ textarea, input[type="text"] {
 }
 textarea:focus, input[type="text"]:focus {
   outline: none; border-color: var(--lavender-mid);
-  box-shadow: 0 0 0 3px rgba(107, 91, 138, 0.08); background: #fff;
+  box-shadow: 0 0 0 3px rgba(174, 35, 42, 0.10); background: #fff;
 }
 textarea::placeholder, input[type="text"]::placeholder {
   color: var(--ink-muted); font-style: italic; font-size: 0.88rem;
@@ -395,7 +397,7 @@ table.ws-table .cell-checks { display: flex; flex-direction: column; gap: 4px; }
 }
 .keyword-tags input:focus {
   outline: none; border-style: solid; border-color: var(--lavender-deep);
-  background: #fff; box-shadow: 0 0 0 3px rgba(107, 91, 138, 0.1);
+  background: #fff; box-shadow: 0 0 0 3px rgba(174, 35, 42, 0.12);
 }
 
 /* Checklist */
@@ -429,7 +431,7 @@ table.ws-table .cell-checks { display: flex; flex-direction: column; gap: 4px; }
   position: fixed; bottom: 0; left: 0; width: 100%;
   background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(12px);
   border-top: 1px solid var(--section-line); z-index: 200;
-  box-shadow: 0 -2px 20px rgba(42, 36, 56, 0.05);
+  box-shadow: 0 -2px 20px rgba(10, 10, 10, 0.06);
 }
 .action-bar-inner {
   max-width: 860px; margin: 0 auto; padding: 12px 1.5rem;
@@ -444,7 +446,7 @@ table.ws-table .cell-checks { display: flex; flex-direction: column; gap: 4px; }
   cursor: pointer; transition: all 0.25s; border: none; text-decoration: none;
 }
 .btn-primary { background: var(--lavender-deep); color: #fff; }
-.btn-primary:hover { background: var(--ink); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(42, 36, 56, 0.15); }
+.btn-primary:hover { background: var(--ink); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(10, 10, 10, 0.18); }
 .btn-secondary { background: transparent; color: var(--ink-soft); border: 1.5px solid var(--section-line); }
 .btn-secondary:hover:not(:disabled) { border-color: var(--lavender-mid); color: var(--lavender-deep); }
 .btn-secondary:disabled { opacity: 0.4; cursor: not-allowed; }
